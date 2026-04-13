@@ -1,1 +1,1 @@
-# plt-cupping
+# plt-cup
