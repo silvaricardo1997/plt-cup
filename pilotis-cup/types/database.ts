@@ -2,7 +2,7 @@ export type SessionStatus = 'draft' | 'active' | 'completed'
 export type EvaluationStatus = 'draft' | 'submitted'
 export type EvaluatorRole = 'coordinator' | 'evaluator'
 
-export interface Session {
+export type Session = {
   id: string
   name: string
   date: string
@@ -13,7 +13,7 @@ export interface Session {
   created_at: string
 }
 
-export interface Sample {
+export type Sample = {
   id: string
   session_id: string
   code: string
@@ -22,14 +22,14 @@ export interface Sample {
   created_at: string
 }
 
-export interface SessionEvaluator {
+export type SessionEvaluator = {
   session_id: string
   user_id: string
   role: EvaluatorRole
   joined_at: string
 }
 
-export interface Evaluation {
+export type Evaluation = {
   id: string
   sample_id: string
   evaluator_id: string
@@ -48,18 +48,94 @@ export interface Evaluation {
   submitted_at: string | null
 }
 
-export interface SessionSummary extends Session {
+// View type: session with counts (used in the list)
+export type SessionSummary = Session & {
   sample_count: number
   evaluator_count: number
 }
 
-export interface Database {
+// Insert types — columns with DB defaults are optional
+type SessionInsert = {
+  name: string
+  date: string
+  notes?: string | null
+  status?: SessionStatus
+  created_by: string
+  invite_token?: string
+}
+
+type SampleInsert = {
+  session_id: string
+  code: string
+  label?: string | null
+  position: number
+}
+
+type SessionEvaluatorInsert = {
+  session_id: string
+  user_id: string
+  role: EvaluatorRole
+  joined_at?: string
+}
+
+type EvaluationInsert = {
+  sample_id: string
+  evaluator_id: string
+  fragrance?: number | null
+  flavor?: number | null
+  aftertaste?: number | null
+  acidity?: number | null
+  body?: number | null
+  balance?: number | null
+  overall?: number | null
+  defects?: number
+  taint?: number
+  notes?: string | null
+  status?: EvaluationStatus
+  submitted_at?: string | null
+}
+
+export type Database = {
   public: {
     Tables: {
-      sessions: { Row: Session; Insert: Omit<Session, 'id' | 'created_at' | 'invite_token'>; Update: Partial<Session> }
-      samples: { Row: Sample; Insert: Omit<Sample, 'id' | 'created_at'>; Update: Partial<Sample> }
-      session_evaluators: { Row: SessionEvaluator; Insert: SessionEvaluator; Update: Partial<SessionEvaluator> }
-      evaluations: { Row: Evaluation; Insert: Omit<Evaluation, 'id' | 'created_at'>; Update: Partial<Evaluation> }
+      sessions: {
+        Row: Session
+        Insert: SessionInsert
+        Update: Partial<Session>
+        Relationships: []
+      }
+      samples: {
+        Row: Sample
+        Insert: SampleInsert
+        Update: Partial<Sample>
+        Relationships: []
+      }
+      session_evaluators: {
+        Row: SessionEvaluator
+        Insert: SessionEvaluatorInsert
+        Update: Partial<SessionEvaluator>
+        Relationships: []
+      }
+      evaluations: {
+        Row: Evaluation
+        Insert: EvaluationInsert
+        Update: Partial<Evaluation>
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      session_status: SessionStatus
+      evaluation_status: EvaluationStatus
+      evaluator_role: EvaluatorRole
+    }
+    CompositeTypes: {
+      [_ in never]: never
     }
   }
 }
