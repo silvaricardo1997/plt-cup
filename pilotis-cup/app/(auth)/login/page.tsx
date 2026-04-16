@@ -3,10 +3,11 @@ import { signIn } from '../actions'
 import { Button } from '@/components/ui/Button'
 
 export default async function LoginPage(props: PageProps<'/login'>) {
-  const { error } = await props.searchParams
+  const { error, next } = await props.searchParams
 
   return (
     <form action={signIn} className="flex flex-col gap-4">
+      {next && <input type="hidden" name="next" value={next} />}
       {error === 'auth' && (
         <p className="text-sm text-red-600 text-center bg-red-50 rounded-lg p-3">
           E-mail ou senha incorretos

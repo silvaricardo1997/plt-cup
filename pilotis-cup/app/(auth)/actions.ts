@@ -8,14 +8,16 @@ export async function signIn(formData: FormData) {
 
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+  const next = (formData.get('next') as string) || '/'
 
   const { error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
-    redirect('/login?error=auth')
+    const loginUrl = next !== '/' ? `/login?error=auth&next=${encodeURIComponent(next)}` : '/login?error=auth'
+    redirect(loginUrl)
   }
 
-  redirect('/')
+  redirect(next)
 }
 
 export async function signUp(formData: FormData) {

@@ -127,7 +127,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      join_session_by_token: {
+        Args: { p_token: string }
+        Returns: { session_id: string; session_name: string; session_status: string }[]
+      }
     }
     Enums: {
       session_status: SessionStatus

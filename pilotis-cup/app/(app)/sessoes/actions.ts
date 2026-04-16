@@ -29,7 +29,10 @@ export async function createSession(formData: FormData) {
     .select()
     .single()
 
-  if (error || !session) redirect('/sessoes/nova?error=generic')
+  if (error || !session) {
+    console.error('[createSession] insert error:', error)
+    redirect('/sessoes/nova?error=generic')
+  }
 
   await supabase.from('session_evaluators').insert({
     session_id: session.id,

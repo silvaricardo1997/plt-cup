@@ -1,6 +1,12 @@
 import Link from 'next/link'
+import type { Dictionary } from '@/lib/i18n'
 
-export function EmptyState() {
+interface Props {
+  t: Dictionary
+  showCta?: boolean
+}
+
+export function EmptyState({ t, showCta = true }: Props) {
   return (
     <div className="flex flex-col items-center justify-center flex-1 text-center px-6 py-16">
       <div className="w-14 h-14 rounded-full bg-[#e3f2fb] flex items-center justify-center mb-4">
@@ -22,17 +28,19 @@ export function EmptyState() {
         </svg>
       </div>
       <p className="font-bold text-[14px] text-[#201b54] mb-2">
-        Nenhuma sessão ainda
+        {t['session.list.empty.title']}
       </p>
       <p className="text-[12px] text-[#506a6e] leading-relaxed mb-6 max-w-xs">
-        Crie sua primeira sessão de cupping para começar as avaliações.
+        {t['session.list.empty.description']}
       </p>
-      <Link
-        href="/sessoes/nova"
-        className="rounded-[10px] px-5 py-3 text-sm font-bold bg-[#015484] text-white hover:opacity-90 transition-opacity"
-      >
-        Criar primeira sessão
-      </Link>
+      {showCta && (
+        <Link
+          href="/sessoes/nova"
+          className="rounded-[10px] px-5 py-3 text-sm font-bold bg-[#015484] text-white hover:opacity-90 transition-opacity"
+        >
+          {t['session.list.empty.cta']}
+        </Link>
+      )}
     </div>
   )
 }
